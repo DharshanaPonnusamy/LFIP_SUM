@@ -7,7 +7,7 @@ import data_io, params, SIF_embedding
 
 
 def load_model():
-    wordfile = 'C:/Users/MJ_Jang/Desktop/Dataset/glove.840B.300d.txt'
+    wordfile = "glove path (glove.840B.300d.txt file)" # you can download glove from https://www.kaggle.com/takuok/glove840b300dtxt
     weightfile = artifact_path + '/SIF/enwiki_vocab_min200.txt'  # each line is a word and its frequency
     weightpara = 1e-3  # the parameter in the SIF weighting scheme, usually in the range [3e-5, 3e-3]
     rmpc = 1  # number of principal components to remove in SIF weighting scheme
@@ -23,6 +23,7 @@ def load_model():
     weight4ind = data_io.getWeight(words, word2weight)  # weight4ind[i] is the weight for the i-th word
 
     return (words, weight4ind, rmpc, We)
+
 
 def generate_vecs(models, document):
     words, weight4ind, rmpc, We = models
