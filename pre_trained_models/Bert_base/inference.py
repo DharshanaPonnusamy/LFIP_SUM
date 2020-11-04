@@ -3,14 +3,25 @@ from pytorch_pretrained_bert import BertTokenizer, BertModel
 import torch
 import numpy as np
 
-def load_model():
+
+def load_model(use_gpu: bool=True):
     model = BertModel.from_pretrained('bert-base-uncased')
-    model.to('cuda')
+    if use_gpu:
+        device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    else:
+        device = torch.device('cpu')
+
+    model.to(device)
     model.eval()
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    return (model, tokenizer)
+    return model, tokenizer
 
-def generate_vecs(models, document):
+
+def generate_vecs(models, document, use_gpu: bool=True):
+    if use_gpu:
+        device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    else:
+        device = torch.device('cpu')
     model, tokenizer = models
 
     embedding = []
@@ -23,8 +34,8 @@ def generate_vecs(models, document):
         segments_tensors = torch.tensor([segments_ids])
 
         # If you have a GPU, put everything on cuda
-        tokens_tensor = tokens_tensor.to('cuda')
-        segments_tensors = segments_tensors.to('cuda')
+        tokens_tensor = tokens_tensor.to(device)
+        segments_tensors = segments_tensors.to(device)
 
         # Predict hidden states features for each layer
         with torch.no_grad():

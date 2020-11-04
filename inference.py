@@ -5,28 +5,29 @@ import string
 import json
 from tqdm import tqdm
 
+
 def clean_lines(lines):
-	cleaned = list()
-	# prepare a translation table to remove punctuation
-	table = str.maketrans('', '', string.punctuation)
-	for line in lines:
-		# strip source cnn office if it exists
-		index = line.find('(CNN)')
-		if index > -1:
-			line = line[index+len('(CNN)'):]
-		# tokenize on white space
-		line = line.split()
-		# convert to lower case
-		line = [word.lower() for word in line]
-		# remove punctuation from each token
-		line = [w.translate(table) for w in line]
-		# remove tokens with numbers in them
-		line = [word for word in line if word.isalpha()]
-		# store as string
-		cleaned.append(' '.join(line))
-	# remove empty strings
-	cleaned = [c for c in cleaned if len(c) > 0]
-	return cleaned
+    cleaned = list()
+    # prepare a translation table to remove punctuation
+    table = str.maketrans('', '', string.punctuation)
+    for line in lines:
+        # strip source cnn office if it exists
+        index = line.find('(CNN)')
+        if index > -1:
+            line = line[index+len('(CNN)'):]
+        # tokenize on white space
+        line = line.split()
+        # convert to lower case
+        line = [word.lower() for word in line]
+        # remove punctuation from each token
+        line = [w.translate(table) for w in line]
+        # remove tokens with numbers in them
+        line = [word for word in line if word.isalpha()]
+        # store as string
+        cleaned.append(' '.join(line))
+    # remove empty strings
+    cleaned = [c for c in cleaned if len(c) > 0]
+    return cleaned
 
 
 def args():
@@ -42,11 +43,12 @@ def args():
 
     return parser
 
+
 def main(args):
     module_path = 'pre_trained_models.'
 
     with open(args.input_path, 'r', encoding='utf-8') as files:
-        documents  = json.load(files)
+        documents = json.load(files)
 
     embedding_model_funcs = importlib.import_module(module_path + args.pretrained_model + '.inference')
 
@@ -67,13 +69,12 @@ def main(args):
             embeddings = embedding_model_funcs.generate_vecs(model, sentences_)
             summarizer = IP_summarizer(sentence, embeddings, threshold=args.info_ratio, max_len=args.max_sent_len)
             output = summarizer.Optimization()
-
-
         result.append(list(output))
 
     documents['summary'] = result
     with open(args.save_path, 'w', encoding='utf-8') as files:
         json.dump(documents, files)
+
 
 if __name__ == '__main__':
     parser = args()
