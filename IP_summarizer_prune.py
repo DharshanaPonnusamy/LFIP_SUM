@@ -125,9 +125,9 @@ class IP_summarizer:
             pr_criteria = np.sort(prun_imp)[-self.max_len]
             id_pr = np.where(prun_imp <= pr_criteria)[0]
 
-            self.imp_pr = np.delete(imp,id_pr)
-            pr_Doc_mat = np.delete(self.Doc_mat_,self.imp_pr,0)
-            pr_input_document = np.delete(self.input_document,self.imp_pr,0)
+            self.imp_pr = np.delete(imp, id_pr)
+            pr_Doc_mat = np.delete(self.Doc_mat_, id_pr, 0)
+            pr_input_document = np.delete(self.input_document, id_pr, 0)
         else:
             self.imp_pr = imp
             pr_Doc_mat = self.Doc_mat_
